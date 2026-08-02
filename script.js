@@ -24,10 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Background music setup
-    const bgMusic = new Audio('./audio/audio_bg_music_haal_kaisa_hai-1.mp3');
+    // const bgMusic = new Audio('https://assets.mixkit.co/active_storage/sfx/123/123-preview.mp3');
+    const bgMusic = new Audio('./audio/bg_music_haal_kaisa_hai-1.mp3');
     bgMusic.loop = true;
-    bgMusic.volume = 0.4; // Set desired default volume
-
+    // const cardFlipSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-game-card-flip-2517.wav');
     const cardFlipSound = new Audio('https://cdn.freesound.org/previews/442/442903_9359753-lq.mp3');
     cardFlipSound.volume = 0.6; // Slightly reduce flip sound volume
     cardFlipSound.preload = 'auto';
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const fadeInterval = setInterval(() => {
             currentStep++;
-            audio.volume = Math.min(Math.max(start + (stepChange * currentStep), 0), 1);
+            audio.volume = start + (stepChange * currentStep);
             
             if (currentStep >= steps) {
                 clearInterval(fadeInterval);
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     musicButton.addEventListener('click', () => {
         if (bgMusic.paused) {
             bgMusic.volume = 0;
-            bgMusic.play().catch(e => console.log('Background music play failed:', e));
+            bgMusic.play();
             fadeAudio(bgMusic, 0, 0.4, 1000); // Fade in over 1 second
             musicButton.classList.add('playing');
         } else {
@@ -69,19 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Card interaction handlers
     document.querySelectorAll('.card').forEach(card => {
-        // Click/touch sound effect & Autoplay Background Music on First Card Click
+        // Click/touch sound effect
         card.addEventListener('click', () => {
-            // Autoplay background music on first interaction if it's paused
-            if (bgMusic.paused) {
-                bgMusic.volume = 0;
-                bgMusic.play().then(() => {
-                    fadeAudio(bgMusic, 0, 0.4, 1000); // Smooth fade-in
-                    musicButton.classList.add('playing');
-                }).catch(e => console.log('Autoplay blocked or failed:', e));
-            }
-
-            // Play card flip sound effect
-            if (cardFlipSound.paused) { 
+            if (cardFlipSound.paused) { // Only play if not already playing
                 cardFlipSound.currentTime = 0;
                 cardFlipSound.play().catch(e => console.log('Audio play failed:', e));
             }
@@ -145,4 +135,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize effects
     createFloatingFlowers();
     createParticleEffect();
-});
+}); 
