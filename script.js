@@ -24,28 +24,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Background music setup
-    const bgMusic = new Audio('./audio/bg_music_haal_kaisa_hai-1.mp3');
+    const bgMusic = new Audio('./audio/audio_bg_music_haal_kaisa_hai-1.mp3');
     bgMusic.loop = true;
-    bgMusic.volume = 0;
-    bgMusic.preload = 'auto';
-    
-    const cardFlipSound = new Audio('https://cdn.freesound.org/previews/442/442903_9359753-lq.mp3');
-    cardFlipSound.volume = 0.6;
-    cardFlipSound.preload = 'auto';
+    bgMusic.volume = 0.4; // Set desired default volume
 
-    // Global flag to track if music has been started
-    let musicStarted = false;
+    const cardFlipSound = new Audio('https://cdn.freesound.org/previews/442/442903_9359753-lq.mp3');
+    cardFlipSound.volume = 0.6; // Slightly reduce flip sound volume
+    cardFlipSound.preload = 'auto';
 
     // Fade audio function
     function fadeAudio(audio, start, end, duration) {
-        const interval = 50;
+        const interval = 50; // Update every 50ms for smooth transition
         const steps = duration / interval;
         const stepChange = (end - start) / steps;
         let currentStep = 0;
 
         const fadeInterval = setInterval(() => {
             currentStep++;
-            audio.volume = start + (stepChange * currentStep);
+            audio.volume = Math.min(Math.max(start + (stepChange * currentStep), 0), 1);
             
             if (currentStep >= steps) {
                 clearInterval(fadeInterval);
@@ -62,7 +58,91 @@ document.addEventListener('DOMContentLoaded', () => {
     musicButton.addEventListener('click', () => {
         if (bgMusic.paused) {
             bgMusic.volume = 0;
-            bgMusic.play().catch(e => console.log('Audio play failed:', e));
-            fadeAudio(bgMusic, 0, 0.4, 1000);
+            bgMusic.play().catch(e => console.log('Background music play failed:', e));
+            fadeAudio(bgMusic, 0, 0.4, 1000); // Fade in over 1 second
             musicButton.classList.add('playing');
-            musicStarted = true
+        } else {
+            fadeAudio(bgMusic, bgMusic.volume, 0, 1000); // Fade out over 1 second
+            setTimeout(() => musicButton.classList.remove('playing'), 1000);
+        }
+    });
+
+    // Card interaction handlers
+    document.querySelectorAll('.card').forEach(card => {
+        // Click/touch sound effect & Autoplay Background Music on First Card Click
+        card.addEventListener('click', () => {
+            // Autoplay background music on first interaction if it's paused
+            if (bgMusic.paused) {
+                bgMusic.volume = 0;
+                bgMusic.play().then(() => {
+                    fadeAudio(bgMusic, 0, 0.4, 1000); // Smooth fade-in
+                    musicButton.classList.add('playing');
+                }).catch(e => console.log('Autoplay blocked or failed:', e));
+            }
+
+            // Play card flip sound effect
+            if (cardFlipSound.paused) { 
+                cardFlipSound.currentTime = 0;
+                cardFlipSound.play().catch(e => console.log('Audio play failed:', e));
+            }
+        });
+
+        // Touch interaction for mobile
+        let touchStart = null;
+        
+        card.addEventListener('touchstart', (e) => {
+            touchStart = e.touches[0].clientX;
+        });
+        
+        card.addEventListener('touchmove', (e) => {
+            if (!touchStart) return;
+            
+            const touchEnd = e.touches[0].clientX;
+            const diff = touchStart - touchEnd;
+            
+            if (Math.abs(diff) > 50) { // Swipe threshold
+                card.querySelector('.card-inner').style.transform = 
+                    diff > 0 ? 'rotateY(180deg)' : 'rotateY(0deg)';
+            }
+            
+            touchStart = null;
+        });
+    });
+
+    // Create floating flowers
+    function createFloatingFlowers() {
+        const container = document.querySelector('.floating-flowers');
+        const flowerCount = 6;
+        
+        for (let i = 0; i < flowerCount; i++) {
+            const flower = document.createElement('div');
+            flower.className = 'float-flower';
+            container.appendChild(flower);
+        }
+    }
+
+    // Create particle effect
+    function createParticleEffect() {
+        const particles = document.querySelector('.particles');
+        
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            // Random positions and timing
+            const startX = Math.random() * 100 + 'vw';
+            const endX = Math.random() * 100 + 'vw';
+            
+            particle.style.setProperty('--delay', `${Math.random() * 5}s`);
+            particle.style.setProperty('--size', `${Math.random() * 10 + 5}px`);
+            particle.style.setProperty('--start-x', startX);
+            particle.style.setProperty('--end-x', endX);
+            
+            particles.appendChild(particle);
+        }
+    }
+    
+    // Initialize effects
+    createFloatingFlowers();
+    createParticleEffect();
+});
