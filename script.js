@@ -26,47 +26,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Background music setup
     const bgMusic = new Audio('audio/bgmx.mp3');
     bgMusic.loop = true;
-    bgMusic.volume = 0.4; // Initial volume
+    bgMusic.volume = 0.4; // Set initial background volume
 
     const cardFlipSound = new Audio('https://cdn.freesound.org/previews/442/442903_9359753-lq.mp3');
     cardFlipSound.volume = 0.6; // Slightly reduce flip sound volume
     cardFlipSound.preload = 'auto';
 
-    // Music toggle functionality with fade
-    const musicButton = document.getElementById('musicButton');
-
-    // Fade audio function
-    function fadeAudio(audio, start, end, duration) {
-        const interval = 50; // Update every 50ms for smooth transition
-        const steps = duration / interval;
-        const stepChange = (end - start) / steps;
-        let currentStep = 0;
-
-        const fadeInterval = setInterval(() => {
-            currentStep++;
-            audio.volume = start + (stepChange * currentStep);
-            
-            if (currentStep >= steps) {
-                clearInterval(fadeInterval);
-                audio.volume = end;
-                if (end === 0 && audio.paused === false) {
-                    audio.pause();
-                }
-            }
-        }, interval);
-    }
-
-    // Attempt to start music automatically on page load
-    function startMusic() {
+    // Priority autoplay routine
+    function autoplayMusic() {
         if (bgMusic.paused) {
-            bgMusic.play().then(() => {
-                musicButton.classList.add('playing');
-            }).catch(() => {
-                // If browser blocks initial autoplay, play on the first user interaction anywhere
+            bgMusic.play().catch(() => {
+                // Browsers block unmuted autoplay without interaction; 
+                // this listener instantly triggers music on the user's first click or tap anywhere
                 const playOnInteraction = () => {
-                    bgMusic.play().then(() => {
-                        musicButton.classList.add('playing');
-                    }).catch(e => console.log('Audio autoplay prevented:', e));
+                    bgMusic.play().catch(e => console.log('Autoplay error:', e));
                     document.removeEventListener('click', playOnInteraction);
                     document.removeEventListener('touchstart', playOnInteraction);
                 };
@@ -76,21 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Trigger audio auto-play routine
-    startMusic();
-
-    // Music button toggle event listener
-    musicButton.addEventListener('click', () => {
-        if (bgMusic.paused) {
-            bgMusic.volume = 0;
-            bgMusic.play();
-            fadeAudio(bgMusic, 0, 0.4, 1000); // Fade in over 1 second
-            musicButton.classList.add('playing');
-        } else {
-            fadeAudio(bgMusic, bgMusic.volume, 0, 1000); // Fade out over 1 second
-            setTimeout(() => musicButton.classList.remove('playing'), 1000);
-        }
-    });
+    // Trigger immediate autoplay attempt on load
+    autoplayMusic();
 
     // Card interaction handlers
     document.querySelectorAll('.card').forEach(card => {
