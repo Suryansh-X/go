@@ -24,13 +24,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Background music setup
-    // const bgMusic = new Audio('https://assets.mixkit.co/active_storage/sfx/123/123-preview.mp3');
-    const bgMusic = new Audio('./audio/bg_music_haal_kaisa_hai-1.mp3');
+    const bgMusic = new Audio('audio/bgmx.mp3');
     bgMusic.loop = true;
-    // const cardFlipSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-game-card-flip-2517.wav');
+    bgMusic.volume = 0.4; // Initial volume
+
     const cardFlipSound = new Audio('https://cdn.freesound.org/previews/442/442903_9359753-lq.mp3');
     cardFlipSound.volume = 0.6; // Slightly reduce flip sound volume
     cardFlipSound.preload = 'auto';
+
+    // Music toggle functionality with fade
+    const musicButton = document.getElementById('musicButton');
 
     // Fade audio function
     function fadeAudio(audio, start, end, duration) {
@@ -53,8 +56,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }, interval);
     }
 
-    // Music toggle functionality with fade
-    const musicButton = document.getElementById('musicButton');
+    // Attempt to start music automatically on page load
+    function startMusic() {
+        if (bgMusic.paused) {
+            bgMusic.play().then(() => {
+                musicButton.classList.add('playing');
+            }).catch(() => {
+                // If browser blocks initial autoplay, play on the first user interaction anywhere
+                const playOnInteraction = () => {
+                    bgMusic.play().then(() => {
+                        musicButton.classList.add('playing');
+                    }).catch(e => console.log('Audio autoplay prevented:', e));
+                    document.removeEventListener('click', playOnInteraction);
+                    document.removeEventListener('touchstart', playOnInteraction);
+                };
+                document.addEventListener('click', playOnInteraction);
+                document.addEventListener('touchstart', playOnInteraction);
+            });
+        }
+    }
+
+    // Trigger audio auto-play routine
+    startMusic();
+
+    // Music button toggle event listener
     musicButton.addEventListener('click', () => {
         if (bgMusic.paused) {
             bgMusic.volume = 0;
@@ -135,4 +160,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize effects
     createFloatingFlowers();
     createParticleEffect();
-}); 
+});
