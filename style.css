@@ -1,15 +1,16 @@
 /*
   Friendship Day Greeting for Friend ✨
   Feminine, magical, soft, and emotional theme
-  All animations and colors are easily editable
 */
 :root {
     --primary-color: #ff69b4;
     --secondary-color: #f8b4d9;
+    --gold-color: #d4af37;
+    --gold-pink-gradient: linear-gradient(135deg, #f8b4d9 0%, #ffe0b2 50%, #d4af37 100%);
     --background-color: #fff9fc;
     --text-color: #2c1810;
-    --card-background: #ffffff;
-    --card-shadow: rgba(0, 0, 0, 0.1);
+    --card-background: rgba(255, 255, 255, 0.95);
+    --card-shadow: rgba(212, 175, 55, 0.25);
     --flower-color: #ff85c8;
     --flower-center: #ffb6c1;
     --animation-timing: 0.6s;
@@ -18,10 +19,12 @@
 .dark-mode {
     --primary-color: #ff85c8;
     --secondary-color: #b14e8f;
+    --gold-color: #ffd700;
+    --gold-pink-gradient: linear-gradient(135deg, #ff85c8 0%, #d4af37 50%, #f8b4d9 100%);
     --background-color: #1a1a2e;
     --text-color: #ffffff;
-    --card-background: #2a2a4a;
-    --card-shadow: rgba(255, 255, 255, 0.1);
+    --card-background: rgba(42, 42, 74, 0.95);
+    --card-shadow: rgba(255, 215, 0, 0.2);
 }
 
 /* General Styles */
@@ -57,141 +60,116 @@ body {
     z-index: 1000;
 }
 
-/* Music toggle styles */
-.music-toggle {
-    position: fixed;
-    top: 20px;
-    right: 80px;
-    z-index: 1000;
-}
-
-#musicButton {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    transition: transform 0.3s;
-}
-
-#musicButton:hover {
-    transform: scale(1.1);
-}
-
-.music-on {
-    display: none;
-}
-
-.playing .music-on {
-    display: inline-block;
-}
-
-.playing .music-off {
-    display: none;
-}
-
 #themeButton {
-    background: none;
-    border: none;
-    font-size: 24px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--secondary-color);
+    backdrop-filter: blur(5px);
+    font-size: 22px;
     cursor: pointer;
-    padding: 8px;
+    padding: 10px;
     border-radius: 50%;
-    transition: transform 0.3s;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
 #themeButton:hover {
     transform: scale(1.1);
+    box-shadow: 0 0 15px var(--secondary-color);
 }
 
-.dark-mode .sun {
-    display: inline-block;
-}
-
-.dark-mode .moon {
-    display: none;
-}
-
-.light-mode .sun {
-    display: none;
-}
-
-.light-mode .moon {
-    display: inline-block;
-}
+.dark-mode .sun { display: inline-block; }
+.dark-mode .moon { display: none; }
+.light-mode .sun { display: none; }
+.light-mode .moon { display: inline-block; }
 
 /* Title styles */
 .title {
     font-size: 3.5rem;
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     font-family: 'Dancing Script', cursive;
     color: var(--primary-color);
-    text-shadow: 2px 2px 4px var(--card-shadow);
+    text-shadow: 2px 2px 8px rgba(255, 105, 180, 0.3);
 }
 
 .subtitle {
-    font-size: 2rem;
+    font-size: 1.8rem;
     text-align: center;
     margin-bottom: 2rem;
     font-family: 'Dancing Script', cursive;
-    color: var(--secondary-color);
+    color: var(--gold-color);
 }
 
-/* Card styles */
+/* Cards container & layout */
 .cards-container {
     display: flex;
     flex-direction: row;
-    gap: 0.2rem;
+    gap: 1.5rem;
     margin-top: 1rem;
-    perspective: 1000px;
+    perspective: 1200px;
     justify-content: center;
-    padding: 2rem;
+    padding: 1rem;
+    flex-wrap: wrap;
 }
 
 .card {
-    width: 400px;
-    height: 200px;
+    width: 320px;
+    min-height: 240px;
     position: relative;
     cursor: pointer;
     transform-style: preserve-3d;
-    transition: transform 0.5s;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-.card:nth-child(1) { transform: translateX(40px) translateZ(-20px); }
-.card:nth-child(2) { transform: translateX(20px) translateZ(-40px); }
-.card:nth-child(3) { transform: translateZ(-60px); }
 
 .card-inner {
     position: relative;
     width: 100%;
     height: 100%;
     transform-style: preserve-3d;
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.card:hover .card-inner {
+.card.flipped .card-inner {
     transform: rotateY(180deg);
 }
 
+/* Shining Gold-Pinkish Border & Styling */
 .card-front, .card-back {
     position: absolute;
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 1.5rem;
-    border-radius: 15px;
-    background-color: var(--card-background);
-    box-shadow: 0 4px 15px var(--card-shadow);
+    box-sizing: border-box;
+    border-radius: 20px;
+    background: var(--card-background);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px var(--card-shadow);
+    border: 2px solid transparent;
+    background-clip: padding-box;
 }
 
-.card-back {
-    transform: rotateY(180deg);
-    text-align: center;
+/* Gold-Pinkish Animated Border Ring */
+.card-front::before, .card-back::before {
+    content: '';
+    position: absolute;
+    top: -3px; left: -3px; right: -3px; bottom: -3px;
+    background: var(--gold-pink-gradient);
+    border-radius: 22px;
+    z-index: -1;
+    animation: goldShimmer 3s ease-in-out infinite alternate;
+}
+
+@keyframes goldShimmer {
+    0% {
+        filter: drop-shadow(0 0 5px rgba(248, 180, 217, 0.6)) brightness(1);
+    }
+    100% {
+        filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.9)) brightness(1.2);
+    }
 }
 
 .card-front {
@@ -200,204 +178,82 @@ body {
 }
 
 .card:hover .card-front {
-    transform: scale(1.05);
-    box-shadow: 0 8px 25px var(--card-shadow);
-}
-
-.card-back p {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.5s ease;
-}
-
-.card:hover .card-back p {
-    opacity: 1;
-    transform: translateY(0);
+    transform: scale(1.02);
 }
 
 .card-design {
     font-family: 'Dancing Script', cursive;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: var(--primary-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
 }
 
-/* Center flower styles */
-.center-flower {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
+.card-back {
+    transform: rotateY(180deg);
+    text-align: center;
+    overflow-y: auto;
+    justify-content: space-between;
+}
+
+.card-back p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
     opacity: 0;
-    z-index: -1;
-    animation: flowerAppear 1.2s 1.5s cubic-bezier(.4,0,.2,1) forwards;
+    transform: translateY(15px);
+    transition: all 0.5s ease 0.2s;
 }
 
-.flower-center {
-    width: 40px;
-    height: 40px;
-    background: var(--flower-center);
-    border-radius: 50%;
-    position: relative;
-    z-index: 2;
-    box-shadow: 0 0 20px 5px var(--secondary-color);
+.card.flipped .card-back p {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-.petals {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.card-back .dogri-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-top: 0.8rem;
+    border-top: 1px dashed var(--secondary-color);
+    padding-top: 0.6rem;
 }
 
-.petal {
-    position: absolute;
-    width: 30px;
-    height: 60px;
-    background: var(--flower-color);
-    border-radius: 30px;
-    transform-origin: center bottom;
-    opacity: 0;
-    animation: petalBloom 0.7s cubic-bezier(.4,0,.2,1) forwards;
-}
-
-.petal:nth-child(1) { transform: rotate(0deg) translateY(-30px); animation-delay: 1.7s; }
-.petal:nth-child(2) { transform: rotate(45deg) translateY(-30px); animation-delay: 1.8s; }
-.petal:nth-child(3) { transform: rotate(90deg) translateY(-30px); animation-delay: 1.9s; }
-.petal:nth-child(4) { transform: rotate(135deg) translateY(-30px); animation-delay: 2.0s; }
-.petal:nth-child(5) { transform: rotate(180deg) translateY(-30px); animation-delay: 2.1s; }
-.petal:nth-child(6) { transform: rotate(225deg) translateY(-30px); animation-delay: 2.2s; }
-.petal:nth-child(7) { transform: rotate(270deg) translateY(-30px); animation-delay: 2.3s; }
-.petal:nth-child(8) { transform: rotate(315deg) translateY(-30px); animation-delay: 2.4s; }
-
-/* Floating flowers background */
-.floating-flowers {
+/* Spreading Leaves Effect */
+.leaf-particle {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
     pointer-events: none;
-    z-index: -2;
+    z-index: 999;
+    font-size: 1.4rem;
+    animation: leafSpread 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes leafSpread {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(0.5) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--dx), var(--dy)) scale(1.3) rotate(var(--rot));
+    }
+}
+
+/* Floating Flowers & Particle Animations */
+.floating-flowers, .particles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    pointer-events: none;
+    z-index: -1;
 }
 
 .float-flower {
     position: absolute;
-    width: 20px;
-    height: 20px;
+    width: 18px; height: 18px;
     background: var(--flower-color);
     border-radius: 50%;
     opacity: 0.3;
     animation: float 15s infinite linear;
-}
-
-.float-flower::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    height: 100%;
-    background: var(--flower-color);
-    border-radius: 50%;
-    transform: translate(-50%, -50%) scale(0.8);
-}
-
-.float-flower:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
-.float-flower:nth-child(2) { top: 20%; left: 80%; animation-delay: -2s; }
-.float-flower:nth-child(3) { top: 80%; left: 15%; animation-delay: -4s; }
-.float-flower:nth-child(4) { top: 70%; left: 70%; animation-delay: -6s; }
-.float-flower:nth-child(5) { top: 40%; left: 40%; animation-delay: -8s; }
-.float-flower:nth-child(6) { top: 60%; left: 30%; animation-delay: -10s; }
-
-/* Page unfold animation */
-.page-unfold {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--background-color);
-    z-index: 1000;
-    animation: unfold 1.5s ease-in-out forwards;
-    transform-origin: top;
-}
-
-/* Animations */
-@keyframes unfold {
-    0% {
-        transform: scaleY(1);
-    }
-    100% {
-        transform: scaleY(0);
-    }
-}
-
-@keyframes flowerAppear {
-    0% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0);
-    }
-    100% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-    }
-}
-
-@keyframes petalBloom {
-    0% {
-        opacity: 0;
-        transform-origin: bottom center;
-        transform: rotate(var(--rotation)) translateY(-30px) scale(0);
-    }
-    100% {
-        opacity: 1;
-        transform-origin: bottom center;
-        transform: rotate(var(--rotation)) translateY(-30px) scale(1);
-    }
-}
-
-@keyframes float {
-    0% {
-        transform: translate(0, 0) rotate(0deg);
-    }
-    33% {
-        transform: translate(30px, -50px) rotate(120deg);
-    }
-    66% {
-        transform: translate(-30px, -100px) rotate(240deg);
-    }
-    100% {
-        transform: translate(0, -150px) rotate(360deg);
-    }
-}
-
-/* Make content initially hidden and fade in */
-.hidden {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fade-in 1s ease-out 1.5s forwards;
-}
-
-@keyframes fade-in {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Particle styles */
-.particles {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
 }
 
 .particle {
@@ -410,71 +266,48 @@ body {
     height: var(--size);
 }
 
+@keyframes float {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(30px, -70px) rotate(180deg); }
+    100% { transform: translate(0, -150px) rotate(360deg); }
+}
+
 @keyframes particleFloat {
-    0% {
-        transform: translate(var(--start-x), 100vh) rotate(0deg);
-        opacity: 0;
-    }
-    50% {
-        opacity: 0.5;
-    }
-    100% {
-        transform: translate(var(--end-x), -100px) rotate(360deg);
-        opacity: 0;
-    }
+    0% { transform: translate(var(--start-x), 100vh) rotate(0deg); opacity: 0; }
+    50% { opacity: 0.5; }
+    100% { transform: translate(var(--end-x), -100px) rotate(360deg); opacity: 0; }
 }
 
-/* Responsive design */
-@media (max-width: 1024px) {
-    .cards-container {
-        transform: scale(0.9);
-        flex-wrap: wrap;
-    }
-    
-    .card {
-        width: 350px;
-    }
+.page-unfold {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: var(--background-color);
+    z-index: 1000;
+    animation: unfold 1.2s ease-in-out forwards;
+    transform-origin: top;
 }
 
+@keyframes unfold {
+    0% { transform: scaleY(1); }
+    100% { transform: scaleY(0); }
+}
+
+.hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fade-in 1s ease-out 1.2s forwards;
+}
+
+@keyframes fade-in {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
-    .title {
-        font-size: 2.5rem;
-    }
-    
-    .subtitle {
-        font-size: 1.5rem;
-    }
-    
-    .cards-container {
-        transform: scale(0.85);
-        padding: 1rem;
-    }
-    
-    .card:nth-child(1) { transform: translateX(20px) translateZ(-20px); }
-    .card:nth-child(2) { transform: translateX(10px) translateZ(-40px); }
-    .card:nth-child(3) { transform: translateZ(-60px); }
+    .title { font-size: 2.5rem; }
+    .subtitle { font-size: 1.4rem; }
+    .cards-container { flex-direction: column; align-items: center; }
+    .card { width: 90%; max-width: 340px; min-height: 220px; }
 }
-
-@media (max-width: 480px) {
-    .title {
-        font-size: 2rem;
-    }
-    
-    .subtitle {
-        font-size: 1.2rem;
-    }
-    
-    .cards-container {
-        flex-direction: column;
-        transform: scale(0.8);
-        padding: 0.5rem;
-    }
-    
-    .card {
-        width: 300px;
-    }
-    
-    .card:nth-child(1) { transform: translateY(-20px) translateZ(-20px); }
-    .card:nth-child(2) { transform: translateY(-10px) translateZ(-40px); }
-    .card:nth-child(3) { transform: translateZ(-60px); }
-} 
